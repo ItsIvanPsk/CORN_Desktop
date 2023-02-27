@@ -38,14 +38,13 @@ public class ControllerUsersView implements Initializable {
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         JSONObject obj = new JSONObject("{}");
-        UtilsHTTP.sendPOST(Main.protocol + "://" + Main.host + ":" + Main.port + "/get_profiles", obj.toString(),
+        UtilsHTTP.sendPOST(Main.protocol + "://" + Main.host + "/get_profiles", obj.toString(),
                 (response) -> {
                     loadUserInfoCallback(response);
                 });
     }
 
     private void loadUserInfoCallback(String response) {
-        System.out.println(response);
         JSONObject objResponse = new JSONObject(response);
         JSONObject objResult = objResponse.getJSONObject("result");
         JSONArray JSONlist = objResult.getJSONArray("profiles");
@@ -53,12 +52,6 @@ public class ControllerUsersView implements Initializable {
 
         for (int i = 0; i < JSONlist.length(); i++) {
             JSONObject user = JSONlist.getJSONObject(i);
-            System.out.println("Email: " + user.getString("email"));
-            System.out.println("Name: " + user.getString("name"));
-            System.out.println("Surname: " + user.getString("surname"));
-            System.out.println("Phone: " + user.getString("phone"));
-            System.out.println("Password: " + user.getString("password"));
-            System.out.println("Balance: " + user.getFloat("balance"));
 
             try {
                 FXMLLoader loader = new FXMLLoader(resource);
