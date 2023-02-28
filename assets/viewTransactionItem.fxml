@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="70.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="TransactionUserItem">
+   <children>
+      <Label layoutX="244.0" layoutY="22.0" text="DAY" />
+      <Label layoutX="150.0" layoutY="22.0" text="AMOUNT" />
+      <Label layoutX="14.0" layoutY="22.0" prefHeight="27.0" prefWidth="125.0" text="DESTINATION" />
+   </children>
+</AnchorPane>

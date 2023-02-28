@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 public class ControllerUsersView implements Initializable {
@@ -34,6 +35,9 @@ public class ControllerUsersView implements Initializable {
 
     @FXML
     private Label balance;
+
+    @FXML
+    private AnchorPane userDetail;
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -78,5 +82,39 @@ public class ControllerUsersView implements Initializable {
         this.phone.setText(phone);
         this.email.setText(email);
         this.balance.setText(balance);
+
+        JSONObject obj = new JSONObject("{}");
+        obj.put("phone", phone.toString());
+        UtilsHTTP.sendPOST(Main.protocol + "://" + Main.host + "/get_transactions", obj.toString(),
+                (response) -> {
+                    loadTransactionsCallBack(response);
+                });
+
+        this.userDetail.setVisible(true);
     }
+
+    private void loadTransactionsCallBack(String response) {
+        JSONObject objResponse = new JSONObject(response);
+        JSONObject objResult = objResponse.getJSONObject("result");
+        JSONArray JSONlist = objResult.getJSONArray("transactions");
+        URL resource = this.getClass().getResource("./assets/viewUserItem.fxml");
+
+        for (int i = 0; i < JSONlist.length(); i++) {
+            JSONObject user = JSONlist.getJSONObject(i);
+
+            try {
+                FXMLLoader loader = new FXMLLoader(resource);
+                Parent itemTemplate = loader.load();
+                ControllerUserItem itemController = loader.getController();
+
+                itemController.set
+
+                usersVBox.getChildren().add(itemTemplate);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

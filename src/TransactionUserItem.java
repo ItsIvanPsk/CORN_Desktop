@@ -1,8 +1,7 @@
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
 
-public class ControllerUserItem {
+public class TransactionUserItem {
 
     @FXML
     private Label name;
@@ -16,12 +15,6 @@ public class ControllerUserItem {
     private String email;
 
     private String balance;
-
-    @FXML
-    private void loadUserDetails() {
-        ControllerUsersView ctrlUserView = (ControllerUsersView) UtilsViews.getController("users_view");
-        ctrlUserView.loadUserDetails(name.getText(), surname.getText(), phone.getText(), email, balance);
-    }
 
     public String getName() {
         return name.getText();
