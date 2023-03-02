@@ -5,55 +5,55 @@ public class TransactionUserItem {
 
     @FXML
     private Label name;
+    
+    @FXML
+    private Label id;
 
     @FXML
-    private Label surname;
-
+    private Label amount;
+    
     @FXML
-    private Label phone;
+    private Label date;
 
-    private String email;
+    public TransactionUserItem() {  }
 
-    private String balance;
+    public TransactionUserItem(Label name, Label id, Label amount, Label date) {
+        this.name = name;
+        this.id = id;
+        this.amount = amount;
+        this.date = date;
+    }
 
-    public String getName() {
-        return name.getText();
+    public Label getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name.setText(name);
     }
 
-    public String getSurname() {
-        return surname.getText();
+    public Label getId() {
+        return id;
     }
 
-    public void setSurname(String surname) {
-        this.surname.setText(surname);
+    public void setId(String id) {
+        this.id.setText(id);
     }
 
-    public String getPhone() {
-        return phone.getText();
+    public Label getAmount() {
+        return amount;
     }
 
-    public void setPhone(String phone) {
-        this.phone.setText(phone);
+    public void setAmount(String amount) {
+        this.amount.setText(amount);
     }
 
-    public String getEmail() {
-        return email;
+    public Label getDate() {
+        return date;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getBalance() {
-        return balance;
-    }
-
-    public void setBalance(String balance) {
-        this.balance = balance;
+    public void setDate(String date) {
+        this.date.setText(date);
     }
 
 }

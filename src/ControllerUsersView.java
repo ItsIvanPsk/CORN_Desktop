@@ -15,11 +15,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 public class ControllerUsersView implements Initializable {
 
     @FXML
     private VBox usersVBox;
+
+    @FXML
+    private VBox transactionVBox;
 
     @FXML
     private Label name;
@@ -50,28 +54,31 @@ public class ControllerUsersView implements Initializable {
 
     private void loadUserInfoCallback(String response) {
         JSONObject objResponse = new JSONObject(response);
-        JSONObject objResult = objResponse.getJSONObject("result");
-        JSONArray JSONlist = objResult.getJSONArray("profiles");
-        URL resource = this.getClass().getResource("./assets/viewUserItem.fxml");
-
-        for (int i = 0; i < JSONlist.length(); i++) {
-            JSONObject user = JSONlist.getJSONObject(i);
-
-            try {
-                FXMLLoader loader = new FXMLLoader(resource);
-                Parent itemTemplate = loader.load();
-                ControllerUserItem itemController = loader.getController();
-
-                itemController.setName(user.getString("name"));
-                itemController.setSurname(user.getString("surname"));
-                itemController.setPhone(user.getString("phone"));
-                itemController.setEmail(user.getString("email"));
-                itemController.setBalance(String.valueOf(user.getFloat("balance")));
-
-                usersVBox.getChildren().add(itemTemplate);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+        System.out.println(objResponse.toString());
+        if (objResponse.getString("status") != "KO") {
+            JSONObject objResult = objResponse.getJSONObject("result");
+            JSONArray JSONlist = objResult.getJSONArray("profiles");
+            URL resource = this.getClass().getResource("./assets/viewUserItem.fxml");
+    
+            for (int i = 0; i < JSONlist.length(); i++) {
+                JSONObject user = JSONlist.getJSONObject(i);
+    
+                try {
+                    FXMLLoader loader = new FXMLLoader(resource);
+                    Parent itemTemplate = loader.load();
+                    ControllerUserItem itemController = loader.getController();
+    
+                    itemController.setName(user.getString("name"));
+                    itemController.setSurname(user.getString("surname"));
+                    itemController.setPhone(user.getString("phone"));
+                    itemController.setEmail(user.getString("email"));
+                    itemController.setBalance(String.valueOf(user.getFloat("balance")));
+    
+                    usersVBox.getChildren().add(itemTemplate);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -87,29 +94,48 @@ public class ControllerUsersView implements Initializable {
         obj.put("phone", phone.toString());
         UtilsHTTP.sendPOST(Main.protocol + "://" + Main.host + "/get_transactions", obj.toString(),
                 (response) -> {
-                    loadTransactionsCallBack(response);
+                    loadTransactionsCallBack(response, phone);
                 });
 
         this.userDetail.setVisible(true);
     }
 
-    private void loadTransactionsCallBack(String response) {
+    private void loadTransactionsCallBack(String response, String phone) {
         JSONObject objResponse = new JSONObject(response);
         JSONObject objResult = objResponse.getJSONObject("result");
         JSONArray JSONlist = objResult.getJSONArray("transactions");
-        URL resource = this.getClass().getResource("./assets/viewUserItem.fxml");
+        URL resource = this.getClass().getResource("./assets/viewTransactionItem.fxml");
+
+        transactionVBox.getChildren().clear();
 
         for (int i = 0; i < JSONlist.length(); i++) {
-            JSONObject user = JSONlist.getJSONObject(i);
-
+            JSONObject transaction = JSONlist.getJSONObject(i);
             try {
                 FXMLLoader loader = new FXMLLoader(resource);
                 Parent itemTemplate = loader.load();
-                ControllerUserItem itemController = loader.getController();
+                TransactionUserItem itemController = loader.getController();
 
-                itemController.set
+                if (transaction.getString("destination").equals(phone)) {
+                    itemController.setName(transaction.getString("destinationName"));
+                    itemController.setAmount(" +" + transaction.getString("amount"));
+                    itemController.getAmount().setTextFill(Color.GREEN);
+                    itemController.setId(transaction.getString("destination"));
+                    if (!transaction.get("timeAccepted").equals(null)) {
+                        itemController.setDate(transaction.get("timeAccepted").toString());
+                    } else { itemController.setDate(""); }
 
-                usersVBox.getChildren().add(itemTemplate);
+                } 
+                if (transaction.getString("origin").equals(phone)) {
+                    itemController.setName(transaction.getString("destinationName"));
+                    itemController.setAmount(" -" + transaction.getString("amount"));
+                    itemController.getAmount().setTextFill(Color.RED);
+                    itemController.setId(transaction.getString("destination"));
+                    if (!transaction.get("timeAccepted").equals(null)) {
+                        itemController.setDate(transaction.get("timeAccepted").toString());
+                    } else { itemController.setDate(""); }
+                }
+
+                transactionVBox.getChildren().add(itemTemplate);
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

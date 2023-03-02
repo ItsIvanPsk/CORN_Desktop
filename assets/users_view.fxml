@@ -54,7 +54,7 @@
             </GridPane>
             <ScrollPane layoutX="40.0" layoutY="386.0" prefHeight="200.0" prefWidth="390.0">
                <content>
-                  <VBox id="transactionList" fx:id="usersVBox1" prefHeight="200.0" prefWidth="368.0" />
+                  <VBox id="transactionVBox" fx:id="transactionVBox" prefHeight="200.0" prefWidth="368.0" />
                </content>
             </ScrollPane>
             <Label layoutX="174.0" layoutY="21.0" text="User detail">
