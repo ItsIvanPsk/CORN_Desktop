@@ -16,10 +16,13 @@ public class ControllerUserItem {
 
     private String balance;
 
+    private int user_id;
+
+
     @FXML
     private void loadUserDetails() {
         ControllerUsersView ctrlUserView = (ControllerUsersView) UtilsViews.getController("users_view");
-        ctrlUserView.loadUserDetails(name.getText(), surname.getText(), phone.getText(), email, balance);
+        ctrlUserView.loadUserDetails(name.getText(), surname.getText(), phone.getText(), email, balance, user_id);
     }
 
     public String getName() {
@@ -60,6 +63,14 @@ public class ControllerUserItem {
 
     public void setBalance(String balance) {
         this.balance = balance;
+    }
+
+    public String getUserId() {
+        return balance;
+    }
+
+    public void setUserId(int user_id) {
+        this.user_id = user_id;
     }
 
 }

@@ -11,8 +11,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -43,8 +48,32 @@ public class ControllerUsersView implements Initializable {
     @FXML
     private AnchorPane userDetail;
 
+    @FXML
+    private Button filter;
+
+    @FXML
+    private Button filterClean;
+
+    @FXML
+    private TextField filterBalanceStart;
+
+    @FXML
+    private TextField filterBalanceEnd;
+
+    @FXML
+    private TextField filterName;
+
+    @FXML
+    private Slider filterTransaction;
+
+    @FXML
+    private ComboBox filterStatus;
+
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
+        ObservableList<Object> items = FXCollections.observableArrayList();
+        items.addAll("NO_VERIFICAT", "A_VERIFICAR", "ACCEPTAT", "REBUTJAT");
+        filterStatus.setItems(items);
         JSONObject obj = new JSONObject("{}");
         UtilsHTTP.sendPOST(Main.protocol + "://" + Main.host + "/get_profiles", obj.toString(),
                 (response) -> {
@@ -55,6 +84,7 @@ public class ControllerUsersView implements Initializable {
     private void loadUserInfoCallback(String response) {
         JSONObject objResponse = new JSONObject(response);
         System.out.println(objResponse.toString());
+        usersVBox.getChildren().clear();
         if (objResponse.getString("status") != "KO") {
             JSONObject objResult = objResponse.getJSONObject("result");
             JSONArray JSONlist = objResult.getJSONArray("profiles");
@@ -73,17 +103,17 @@ public class ControllerUsersView implements Initializable {
                     itemController.setPhone(user.getString("phone"));
                     itemController.setEmail(user.getString("email"));
                     itemController.setBalance(String.valueOf(user.getFloat("balance")));
+                    itemController.setUserId(user.getInt("user_id"));
     
                     usersVBox.getChildren().add(itemTemplate);
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
         }
     }
 
-    public void loadUserDetails(String name, String surname, String phone, String email, String balance) {
+    public void loadUserDetails(String name, String surname, String phone, String email, String balance, int user_id) {
         this.name.setText(name);
         this.surname.setText(surname);
         this.phone.setText(phone);
@@ -91,9 +121,10 @@ public class ControllerUsersView implements Initializable {
         this.balance.setText(balance);
 
         JSONObject obj = new JSONObject("{}");
-        obj.put("phone", phone.toString());
-        UtilsHTTP.sendPOST(Main.protocol + "://" + Main.host + "/get_transactions", obj.toString(),
+        obj.put("user_id", user_id);
+        UtilsHTTP.sendPOST(Main.protocol + "://" + Main.host + "/get_transactions_phone", obj.toString(),
                 (response) -> {
+                    System.out.println(response);
                     loadTransactionsCallBack(response, phone);
                 });
 
@@ -139,6 +170,95 @@ public class ControllerUsersView implements Initializable {
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    public void onFilterPressed() {
+        int balanceStart = 0;
+        int balanceEnd = 0;
+        if (filterBalanceStart.getText() != "") {
+            balanceStart = Integer.parseInt(filterBalanceStart.getText());
+        } else if (filterBalanceEnd.getText() != "") {
+            balanceEnd = Integer.parseInt(filterBalanceEnd.getText());
+        }
+        System.out.println("Pressed filter");
+        if (!isNumeric(filterBalanceStart.getText())) {
+            showAlert(AlertType.ERROR, "Balance Error", null, "El saldo d'inici no es un número");
+        } else if (!isNumeric(filterBalanceEnd.getText())) {
+            showAlert(AlertType.ERROR, "Balance Error", null, "El saldo fin no es un número");
+        } else if (!filterBalanceStart.getText().isEmpty() && filterBalanceEnd.getText().isEmpty() || filterBalanceStart.getText().isEmpty() && !filterBalanceEnd.getText().isEmpty()) {
+            showAlert(AlertType.ERROR, "Balance Error", null, "No pots filtrar sense ficar un minim sense un maxim i viceversa");
+        } else if (balanceStart < balanceEnd) {
+            showAlert(AlertType.ERROR, "Balance Error", null, "El saldo min no pot ser mes petit que el saldo maxim");
+        } else {
+            JSONObject json = new JSONObject();
+            if (filterName == null || filterName.getText().equals("")) {
+                json.put("account_name", "null");
+            } else { 
+                json.put("account_name", filterName.getText());
+            }
+            if (filterTransaction == null || filterName.getText().equals("")) {
+                json.put("transaction_count", "null");
+            } else { 
+                json.put("transaction_count", (int) filterTransaction.getValue());
+            }
+            if (filterBalanceStart == null || filterBalanceStart.getText().equals("")) {
+                json.put("account_balance_min", "null");
+            } else { 
+                json.put("account_balance_min", (Integer.parseInt(filterBalanceStart.getText())));
+            }
+            if (filterBalanceEnd == null || filterBalanceEnd.getText().equals("")) {
+                json.put("account_balance_max", "null");
+            } else { 
+                json.put("account_balance_max", Integer.parseInt(filterBalanceEnd.getText()));
+            }
+            if (filterStatus == null || filterStatus.getValue().toString().equals("")) {
+                json.put("account_status", "null");
+            } else { 
+                json.put("account_status", filterStatus.getValue().toString());
+            }
+
+            System.out.println("JSON -> " + json);
+
+            UtilsHTTP.sendPOST(Main.protocol + "://" + Main.host + "/user_filter", json.toString(),
+                (response) -> {
+                    System.out.println(response);
+                    loadUserInfoCallback(response);
+                });
+
+        }
+    }
+
+    @FXML
+    public void onClearFilterPressed() {
+        System.out.println("Clean filter pressed");
+        filterName.setText("");
+        filterTransaction.setValue(filterTransaction.getMin());
+        filterBalanceStart.setText("");
+        filterBalanceEnd.setText("");
+        showAlert(AlertType.INFORMATION, "Filtre","", "Se han resetejat els filtres.");
+    }
+
+    @FXML
+    public void showAlert(AlertType alertType, String title, String headerText, String contentText) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+        alert.showAndWait();
+    }
+
+    public static boolean isNumeric(String cadena) {
+        if (cadena.isEmpty()) {
+            return true;
+        } else {
+            try {
+                Integer.parseInt(cadena);
+                return true;
+            } catch (NumberFormatException excepcion) {
+                return false;
             }
         }
     }

@@ -8,9 +8,14 @@ public class Main extends Application {
     public static String protocolWS = "ws";
 
     public static String protocol = "https";
-    public static String host = "cornapi-production.up.railway.app";
-    public static String port = "7903";
+    public static String host = "cornapi-production-8820.up.railway.app";
+    public static String port = "7786";
 
+   /* 
+    public static String protocol = "http";
+    public static String host = "localhost";
+    public static String port = "3000";
+ */
     public static String title = "CORN Desktop";
 
     public static void main(String[] args) {
