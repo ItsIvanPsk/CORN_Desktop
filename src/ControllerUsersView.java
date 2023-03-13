@@ -67,13 +67,12 @@ public class ControllerUsersView implements Initializable {
     private Slider filterTransaction;
 
     @FXML
-    private ComboBox filterStatus;
+    private ComboBox<String> accountStatus;
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        ObservableList<Object> items = FXCollections.observableArrayList();
-        items.addAll("NO_VERIFICAT", "A_VERIFICAR", "ACCEPTAT", "REBUTJAT");
-        filterStatus.setItems(items);
+        accountStatus.getItems().addAll("NO_VERIFICAT", "PER_VERIFICAR", "ACCEPTAT", "REFUSAT");
+        accountStatus.getSelectionModel().select("NO_VERIFICAT");
         JSONObject obj = new JSONObject("{}");
         UtilsHTTP.sendPOST(Main.protocol + "://" + Main.host + "/get_profiles", obj.toString(),
                 (response) -> {
@@ -85,7 +84,7 @@ public class ControllerUsersView implements Initializable {
         JSONObject objResponse = new JSONObject(response);
         System.out.println(objResponse.toString());
         usersVBox.getChildren().clear();
-        if (objResponse.getString("status") != "KO") {
+        if (objResponse.get("status").toString() != "KO") {
             JSONObject objResult = objResponse.getJSONObject("result");
             JSONArray JSONlist = objResult.getJSONArray("profiles");
             URL resource = this.getClass().getResource("./assets/viewUserItem.fxml");
@@ -109,7 +108,9 @@ public class ControllerUsersView implements Initializable {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
             }
+
         }
     }
 
@@ -168,7 +169,6 @@ public class ControllerUsersView implements Initializable {
 
                 transactionVBox.getChildren().add(itemTemplate);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -214,10 +214,10 @@ public class ControllerUsersView implements Initializable {
             } else { 
                 json.put("account_balance_max", Integer.parseInt(filterBalanceEnd.getText()));
             }
-            if (filterStatus == null || filterStatus.getValue().toString().equals("")) {
+            if (accountStatus == null || accountStatus.getValue().equals("")) {
                 json.put("account_status", "null");
             } else { 
-                json.put("account_status", filterStatus.getValue().toString());
+                json.put("account_status", accountStatus.getValue().toString());
             }
 
             System.out.println("JSON -> " + json);
@@ -239,6 +239,14 @@ public class ControllerUsersView implements Initializable {
         filterBalanceStart.setText("");
         filterBalanceEnd.setText("");
         showAlert(AlertType.INFORMATION, "Filtre","", "Se han resetejat els filtres.");
+
+        JSONObject obj = new JSONObject("{}");
+        UtilsHTTP.sendPOST(Main.protocol + "://" + Main.host + "/get_profiles", obj.toString(),
+                (response) -> {
+                    loadUserInfoCallback(response);
+                });
+        this.userDetail.setVisible(false);
+
     }
 
     @FXML

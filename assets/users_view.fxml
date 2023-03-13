@@ -70,17 +70,17 @@
       <Button layoutX="497.0" layoutY="33.0" maxHeight="30.0" maxWidth="80.0" minHeight="30.0" minWidth="80.0" mnemonicParsing="false" onAction="#onFilterPressed" prefHeight="30.0" prefWidth="80.0" text="Filtrar" />
       <TextField fx:id="filterName" layoutX="14.0" layoutY="33.0" maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="300.0" prefHeight="30.0" prefWidth="300.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="35.0" />
       <Label layoutX="15.0" layoutY="8.0" text="Nom" />
-      <ComboBox id="filterStatus" fx:id="filterStatus" layoutX="15.0" layoutY="117.0" maxHeight="30.0" maxWidth="265.0" minHeight="30.0" minWidth="265.0" prefHeight="30.0" prefWidth="265.0"/>
+      <ComboBox id="accountStatus" fx:id="accountStatus" layoutX="15.0" layoutY="117.0" maxHeight="30.0" maxWidth="265.0" minHeight="30.0" minWidth="265.0" prefHeight="30.0" prefWidth="265.0" />
       <Label layoutX="12.0" layoutY="85.0" prefHeight="32.0" prefWidth="146.0" text="Estat del compte" />
       <Label layoutX="301.0" layoutY="88.0" prefHeight="22.0" prefWidth="143.0" text="Rang transacions" />
       <Slider fx:id="filterTransaction" layoutX="306.0" layoutY="132.0" maxHeight="30.0" maxWidth="265.0" minHeight="30.0" minWidth="265.0" prefHeight="30.0" prefWidth="265.0" showTickLabels="true" showTickMarks="true" />
-      <Label layoutX="14.0" layoutY="176.0" prefHeight="20.0" prefWidth="126.0" text="Rang de saldo" />
-      <Button fx:id="filterClean" layoutX="335.0" layoutY="33.0" maxHeight="30.0" maxWidth="150.0" minHeight="30.0" minWidth="150.0" mnemonicParsing="false" onAction="#onClearFilterPressed" prefHeight="30.0" prefWidth="150.0" text="Limpiar campos" />
+      <Label layoutX="14.0" layoutY="176.0" prefHeight="20.0" prefWidth="126.0" text="Min de saldo" />
+      <Button fx:id="filterClean" layoutX="335.0" layoutY="33.0" maxHeight="30.0" maxWidth="150.0" minHeight="30.0" minWidth="150.0" mnemonicParsing="false" onAction="#onClearFilterPressed" prefHeight="30.0" prefWidth="150.0" text="Netejar camps" />
       <TextField fx:id="filterBalanceStart" layoutX="15.0" layoutY="210.0" maxHeight="30.0" maxWidth="275.0" minHeight="30.0" minWidth="275.0" prefHeight="30.0" prefWidth="275.0" promptText="1">
          <opaqueInsets>
             <Insets />
          </opaqueInsets></TextField>
       <TextField fx:id="filterBalanceEnd" layoutX="301.0" layoutY="210.0" maxHeight="30.0" maxWidth="275.0" minHeight="30.0" minWidth="275.0" prefHeight="30.0" prefWidth="275.0" promptText="1000" />
-      <Label layoutX="300.0" layoutY="176.0" prefHeight="20.0" prefWidth="126.0" text="Rang de saldo" />
+      <Label layoutX="300.0" layoutY="176.0" prefHeight="20.0" prefWidth="126.0" text="Max de saldo" />
    </children>
 </AnchorPane>
