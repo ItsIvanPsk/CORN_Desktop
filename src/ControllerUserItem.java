@@ -1,14 +1,16 @@
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 
 public class ControllerUserItem {
 
     @FXML
     private Label name;
 
-    @FXML
-    private Label surname;
-
+    @FXML 
+    private Circle accountStatus;
+    
     @FXML
     private Label phone;
 
@@ -22,23 +24,34 @@ public class ControllerUserItem {
     @FXML
     private void loadUserDetails() {
         ControllerUsersView ctrlUserView = (ControllerUsersView) UtilsViews.getController("users_view");
-        ctrlUserView.loadUserDetails(name.getText(), surname.getText(), phone.getText(), email, balance, user_id);
+        ctrlUserView.loadUserDetails(name.getText(), phone.getText(), email, balance, user_id);
     }
 
     public String getName() {
         return name.getText();
     }
 
-    public void setName(String name) {
-        this.name.setText(name);
+    public void setName(String name, String surname) {
+        this.name.setText(name + " " + surname);
     }
 
-    public String getSurname() {
-        return surname.getText();
-    }
-
-    public void setSurname(String surname) {
-        this.surname.setText(surname);
+    public void setStatusColor(String color) {
+        if (color.equals("NO_VERFICAT")) { 
+            this.accountStatus.setStroke(Paint.valueOf("#2A52BE"));
+            this.accountStatus.setFill(Paint.valueOf("#2A52BE"));
+        }
+        if (color.equals("PER_VERIFICAR")) {
+            this.accountStatus.setStroke(Paint.valueOf("#FF6400")); 
+            this.accountStatus.setFill(Paint.valueOf("#FF6400")); 
+        }
+        if (color.equals("ACCEPTAT")) {
+            this.accountStatus.setStroke(Paint.valueOf("#008000")); 
+            this.accountStatus.setFill(Paint.valueOf("#008000")); 
+        }
+        if (color.equals("REFUSAT")) {
+            this.accountStatus.setStroke(Paint.valueOf("#ff0000")); 
+            this.accountStatus.setFill(Paint.valueOf("#ff0000")); 
+        }
     }
 
     public String getPhone() {

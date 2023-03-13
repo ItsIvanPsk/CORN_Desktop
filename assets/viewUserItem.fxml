@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -8,22 +9,18 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#loadUserDetails" prefHeight="60.0" prefWidth="270.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ControllerUserItem">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#loadUserDetails" prefHeight="60.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ControllerUserItem">
    <children>
-      <Label fx:id="name" layoutX="7.0" layoutY="12.0" prefHeight="10.0" prefWidth="100.0" text="Name">
+      <Label fx:id="name" layoutX="14.0" layoutY="20.0" prefHeight="21.0" prefWidth="233.0" text="Name">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label fx:id="surname" layoutX="6.0" layoutY="30.0" prefHeight="14.0" prefWidth="112.0" text="Surname" textFill="#575757">
-         <font>
-            <Font name="System Italic" size="11.0" />
-         </font>
-      </Label>
-      <Label fx:id="phone" layoutX="115.0" layoutY="20.0" prefHeight="21.0" prefWidth="151.0" text="Phone">
+      <Label fx:id="phone" layoutX="250.0" layoutY="20.0" prefHeight="21.0" prefWidth="151.0" text="Phone">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
+      <Circle fx:id="accountStatus" fill="DODGERBLUE" layoutX="470.0" layoutY="30.0" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
    </children>
 </AnchorPane>

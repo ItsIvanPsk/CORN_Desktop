@@ -5,8 +5,6 @@ import java.util.ResourceBundle;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -71,8 +69,8 @@ public class ControllerUsersView implements Initializable {
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        accountStatus.getItems().addAll("NO_VERIFICAT", "PER_VERIFICAR", "ACCEPTAT", "REFUSAT");
-        accountStatus.getSelectionModel().select("NO_VERIFICAT");
+        accountStatus.getItems().addAll("", "NO_VERIFICAT", "PER_VERIFICAR", "ACCEPTAT", "REFUSAT");
+        accountStatus.getSelectionModel().select("");
         JSONObject obj = new JSONObject("{}");
         UtilsHTTP.sendPOST(Main.protocol + "://" + Main.host + "/get_profiles", obj.toString(),
                 (response) -> {
@@ -82,7 +80,7 @@ public class ControllerUsersView implements Initializable {
 
     private void loadUserInfoCallback(String response) {
         JSONObject objResponse = new JSONObject(response);
-        System.out.println(objResponse.toString());
+        // System.out.println("RESPONSE -> " + objResponse.toString());
         usersVBox.getChildren().clear();
         if (objResponse.get("status").toString() != "KO") {
             JSONObject objResult = objResponse.getJSONObject("result");
@@ -97,10 +95,10 @@ public class ControllerUsersView implements Initializable {
                     Parent itemTemplate = loader.load();
                     ControllerUserItem itemController = loader.getController();
     
-                    itemController.setName(user.getString("name"));
-                    itemController.setSurname(user.getString("surname"));
+                    itemController.setName(user.getString("name"), user.getString("surname"));
                     itemController.setPhone(user.getString("phone"));
                     itemController.setEmail(user.getString("email"));
+                    itemController.setStatusColor(user.getString("account_status"));
                     itemController.setBalance(String.valueOf(user.getFloat("balance")));
                     itemController.setUserId(user.getInt("user_id"));
     
@@ -114,9 +112,8 @@ public class ControllerUsersView implements Initializable {
         }
     }
 
-    public void loadUserDetails(String name, String surname, String phone, String email, String balance, int user_id) {
-        this.name.setText(name);
-        this.surname.setText(surname);
+    public void loadUserDetails(String name, String phone, String email, String balance, int user_id) {
+        this.name.setText(name + " " + surname);
         this.phone.setText(phone);
         this.email.setText(email);
         this.balance.setText(balance);
@@ -126,14 +123,15 @@ public class ControllerUsersView implements Initializable {
         UtilsHTTP.sendPOST(Main.protocol + "://" + Main.host + "/get_transactions_phone", obj.toString(),
                 (response) -> {
                     System.out.println(response);
-                    loadTransactionsCallBack(response, phone);
+                    loadTransactionsCallBack(response, user_id);
                 });
 
         this.userDetail.setVisible(true);
     }
 
-    private void loadTransactionsCallBack(String response, String phone) {
+    private void loadTransactionsCallBack(String response, int user_id) {
         JSONObject objResponse = new JSONObject(response);
+        // System.out.println("RESPONSE -> " + objResponse.toString());
         JSONObject objResult = objResponse.getJSONObject("result");
         JSONArray JSONlist = objResult.getJSONArray("transactions");
         URL resource = this.getClass().getResource("./assets/viewTransactionItem.fxml");
@@ -146,22 +144,22 @@ public class ControllerUsersView implements Initializable {
                 FXMLLoader loader = new FXMLLoader(resource);
                 Parent itemTemplate = loader.load();
                 TransactionUserItem itemController = loader.getController();
-
-                if (transaction.getString("destination").equals(phone)) {
-                    itemController.setName(transaction.getString("destinationName"));
-                    itemController.setAmount(" +" + transaction.getString("amount"));
+                System.out.println();
+                if (transaction.getInt("destination") == user_id) {
+                    itemController.setName(transaction.getString("originName"));
+                    itemController.setAmount(" +" + transaction.getString("amount") + "CORN");;
                     itemController.getAmount().setTextFill(Color.GREEN);
-                    itemController.setId(transaction.getString("destination"));
+                    itemController.setId("USER_ID: " + transaction.getString("origin"));
                     if (!transaction.get("timeAccepted").equals(null)) {
                         itemController.setDate(transaction.get("timeAccepted").toString());
                     } else { itemController.setDate(""); }
 
                 } 
-                if (transaction.getString("origin").equals(phone)) {
+                if (transaction.getInt("origin") == user_id) {
                     itemController.setName(transaction.getString("destinationName"));
-                    itemController.setAmount(" -" + transaction.getString("amount"));
+                    itemController.setAmount(" -" + transaction.getString("amount") + "CORN");
                     itemController.getAmount().setTextFill(Color.RED);
-                    itemController.setId(transaction.getString("destination"));
+                    itemController.setId("USER_ID: " + transaction.getString("destination"));
                     if (!transaction.get("timeAccepted").equals(null)) {
                         itemController.setDate(transaction.get("timeAccepted").toString());
                     } else { itemController.setDate(""); }
@@ -238,6 +236,7 @@ public class ControllerUsersView implements Initializable {
         filterTransaction.setValue(filterTransaction.getMin());
         filterBalanceStart.setText("");
         filterBalanceEnd.setText("");
+        accountStatus.getSelectionModel().select("");
         showAlert(AlertType.INFORMATION, "Filtre","", "Se han resetejat els filtres.");
 
         JSONObject obj = new JSONObject("{}");
