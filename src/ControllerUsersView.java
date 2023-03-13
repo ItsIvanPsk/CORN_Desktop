@@ -199,7 +199,7 @@ public class ControllerUsersView implements Initializable {
             } else { 
                 json.put("account_name", filterName.getText());
             }
-            if (filterTransaction == null || filterName.getText().equals("")) {
+            if (filterTransaction == null || filterTransaction.getValue() == 0) {
                 json.put("transaction_count", "null");
             } else { 
                 json.put("transaction_count", (int) filterTransaction.getValue());
